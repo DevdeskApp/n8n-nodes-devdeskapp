@@ -4,6 +4,14 @@ All notable changes to the `n8n-nodes-devdeskapp` package will be documented in 
 
 ---
 
+## [0.1.1] - 2026-10-15
+
+### Added
+- **URL Encoding & Decoding Operations**:
+  - **URL Encode**: Converts raw strings into RFC 3986 percentage-encoded strings suitable for query parameters and webhook payload transmission.
+  - **URL Decode**: Converts URL percentage-encoded strings back to clean UTF-8 text with robust error handling for malformed sequences.
+- Extended unit test suite to 13 automated tests covering 100% of node operations.
+
 ## [0.1.0] - 2026-10-15
 
 ### Added

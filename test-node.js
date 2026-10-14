@@ -187,7 +187,35 @@ async function runTests() {
     console.log('✓ Test 11: CTC Calculator calculations passed');
   }
 
-  console.log('\n🎉 ALL 11 UNIT TESTS PASSED WITH ZERO ERRORS!');
+  // Test 12: URL Encode
+  {
+    const mockCtx = createMockExecuteFunctions({
+      resource: 'text',
+      operation: 'urlEncode',
+      textInput: 'DevDeskApp: Fast & Secure Tools 2026? key=val',
+    });
+    const result = await node.execute.call(mockCtx);
+    const data = result[0][0].json;
+    assert.strictEqual(data.success, true);
+    assert.strictEqual(data.encoded, 'DevDeskApp%3A%20Fast%20%26%20Secure%20Tools%202026%3F%20key%3Dval');
+    console.log('✓ Test 12: URL Encode passed');
+  }
+
+  // Test 13: URL Decode
+  {
+    const mockCtx = createMockExecuteFunctions({
+      resource: 'text',
+      operation: 'urlDecode',
+      textInput: 'DevDeskApp%3A%20Fast%20%26%20Secure%20Tools%202026%3F%20key%3Dval',
+    });
+    const result = await node.execute.call(mockCtx);
+    const data = result[0][0].json;
+    assert.strictEqual(data.success, true);
+    assert.strictEqual(data.decoded, 'DevDeskApp: Fast & Secure Tools 2026? key=val');
+    console.log('✓ Test 13: URL Decode passed');
+  }
+
+  console.log('\n🎉 ALL 13 UNIT TESTS PASSED WITH ZERO ERRORS!');
 }
 
 runTests().catch(err => {

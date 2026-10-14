@@ -218,6 +218,18 @@ export class DevDeskApp implements INodeType {
 						description: 'Convert between camelCase, snake_case, kebab-case, UPPERCASE, etc.',
 						action: 'Convert case',
 					},
+					{
+						name: 'URL Encode',
+						value: 'urlEncode',
+						description: 'Encode text strings into URL-safe percentage-encoded strings',
+						action: 'URL encode string',
+					},
+					{
+						name: 'URL Decode',
+						value: 'urlDecode',
+						description: 'Decode URL percentage-encoded strings back to normal text',
+						action: 'URL decode string',
+					},
 				],
 				default: 'slugify',
 			},
@@ -441,6 +453,27 @@ export class DevDeskApp implements INodeType {
 							casing: targetCase,
 							result: converted,
 						};
+					} else if (operation === 'urlEncode') {
+						result = {
+							original: textInput,
+							encoded: encodeURIComponent(textInput),
+							success: true,
+						};
+					} else if (operation === 'urlDecode') {
+						try {
+							result = {
+								original: textInput,
+								decoded: decodeURIComponent(textInput),
+								success: true,
+							};
+						} catch (error) {
+							result = {
+								original: textInput,
+								decoded: textInput,
+								success: false,
+								error: (error as Error).message,
+							};
+						}
 					}
 				}
 
