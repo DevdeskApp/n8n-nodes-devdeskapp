@@ -1,15 +1,41 @@
-name: Tag Release, Test & Publish to NPM
+name: CI/CD Pipeline & NPM Release
 
 on:
   push:
+    branches:
+      - main
     tags:
-      - 'v*' # Trigger automatically when a version tag is pushed (e.g. v0.1.0)
+      - 'v*'
   release:
     types: [published]
-  workflow_dispatch: # Allow manual trigger when desired
+  workflow_dispatch:
 
 jobs:
-  test-and-publish:
+  test-and-build:
+    name: Run Unit Tests & Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Run automated unit tests
+        run: npm test
+
+      - name: Build node distribution
+        run: npm run build
+
+  publish-to-npm:
+    name: Publish to NPM Registry
+    needs: test-and-build
+    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch' || github.event_name == 'release'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -27,13 +53,10 @@ jobs:
       - name: Install dependencies
         run: npm ci --ignore-scripts
 
-      - name: Run automated unit tests
-        run: npm test
-
-      - name: Build package
+      - name: Build node distribution
         run: npm run build
 
-      - name: Publish to NPM with Provenance
+      - name: Publish with Provenance
         run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
