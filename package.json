@@ -25,7 +25,7 @@
   "scripts": {
     "build": "tsc && node copy-assets.js",
     "dev": "tsc --watch",
-    "lint": "eslint --ext .ts ."
+    "test": "node test-node.js"
   },
   "files": [
     "dist"
