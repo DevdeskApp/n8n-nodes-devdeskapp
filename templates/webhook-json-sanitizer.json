@@ -1,0 +1,135 @@
+{
+  "name": "DevDeskApp - Automated JSON Sanitizer & Security Hasher",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "devdesk-sanitize",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "67389a91-9e81-4322-a980-001d7fa13c01",
+      "name": "Webhook Ingest",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        200,
+        300
+      ],
+      "webhookId": "73c65c2b-2d7c-4809-906d-e9c5a153287e"
+    },
+    {
+      "parameters": {
+        "resource": "json",
+        "operation": "prettify",
+        "jsonInput": "={{ $json.body }}",
+        "indentation": "2"
+      },
+      "id": "67389a91-9e81-4322-a980-001d7fa13c02",
+      "name": "DevDeskApp Prettifier",
+      "type": "n8n-nodes-devdeskapp.devDeskApp",
+      "typeVersion": 1,
+      "position": [
+        420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "crypto",
+        "operation": "hash",
+        "textPayload": "={{ $json.formatted }}",
+        "hashAlgorithm": "sha256"
+      },
+      "id": "67389a91-9e81-4322-a980-001d7fa13c03",
+      "name": "DevDeskApp SHA256 Hasher",
+      "type": "n8n-nodes-devdeskapp.devDeskApp",
+      "typeVersion": 1,
+      "position": [
+        640,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "crypto",
+        "operation": "uuid"
+      },
+      "id": "67389a91-9e81-4322-a980-001d7fa13c04",
+      "name": "DevDeskApp UUID Generator",
+      "type": "n8n-nodes-devdeskapp.devDeskApp",
+      "typeVersion": 1,
+      "position": [
+        860,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"status\": \"success\",\n  \"traceId\": \"{{ $json.uuid }}\",\n  \"integrityHash\": \"{{ $('DevDeskApp SHA256 Hasher').item.json.hash }}\",\n  \"sanitizedOutput\": {{ $('DevDeskApp Prettifier').item.json.formatted }},\n  \"poweredBy\": \"https://www.devdeskapp.com\"\n}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "67389a91-9e81-4322-a980-001d7fa13c05",
+      "name": "Respond to Caller",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1080,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Ingest": {
+      "main": [
+        [
+          {
+            "node": "DevDeskApp Prettifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DevDeskApp Prettifier": {
+      "main": [
+        [
+          {
+            "node": "DevDeskApp SHA256 Hasher",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DevDeskApp SHA256 Hasher": {
+      "main": [
+        [
+          {
+            "node": "DevDeskApp UUID Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DevDeskApp UUID Generator": {
+      "main": [
+        [
+          {
+            "node": "Respond to Caller",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "name": "n8n-nodes-devdeskapp",
+  "version": "0.1.0",
+  "description": "Official n8n community node package for DevDeskApp developer utilities, converters, and calculators.",
+  "keywords": [
+    "n8n-community-node-package",
+    "devdeskapp",
+    "developer-utilities",
+    "json-formatter",
+    "ctc-calculator",
+    "converters"
+  ],
+  "license": "MIT",
+  "homepage": "https://www.devdeskapp.com",
+  "author": {
+    "name": "DevDeskApp Community",
+    "email": "support@devdeskapp.com",
+    "url": "https://www.devdeskapp.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DevdeskApp/n8n-nodes-devdeskapp.git"
+  },
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc && node copy-assets.js",
+    "dev": "tsc --watch",
+    "lint": "eslint --ext .ts ."
+  },
+  "files": [
+    "dist"
+  ],
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "nodes": [
+      "dist/nodes/DevDeskApp/DevDeskApp.node.js"
+    ]
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "n8n-workflow": "^1.120.33",
+    "typescript": "~5.3.3"
+  }
+}
