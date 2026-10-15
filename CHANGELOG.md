@@ -4,6 +4,16 @@ All notable changes to the `n8n-nodes-devdeskapp` package will be documented in 
 
 ---
 
+## [0.1.2] - 2026-10-15
+
+### Added
+- **Manual Release Dispatch & CI/CD Automation**:
+  - Implemented manual `workflow_dispatch` trigger in `publish.yml` allowing authorized maintainers to publish any git tag directly to NPM Registry with OIDC Sigstore Provenance.
+  - Added multi-branch automated CI pipeline (`ci.yml`) validating builds, asset bundling, and test suites across `main` and `master` branches on push and pull requests.
+- **Enterprise Release Pipeline Standardization**:
+  - Full local end-to-end compatibility validation with running local n8n instance (v2.8.4) and DevDeskApp dev server.
+  - Standardized semantic version tagging, package synchronization, and clean repository release metadata.
+
 ## [0.1.1] - 2026-10-15
 
 ### Added
