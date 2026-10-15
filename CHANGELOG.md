@@ -2,7 +2,13 @@
 
 All notable changes to the `n8n-nodes-devdeskapp` package will be documented in this file.
 
----
+## [0.1.4] - 2026-10-16
+
+### Fixed
+- **n8n Community Node Verification Pass**:
+  - Resolved `node-param-operation-option-action-miscased` error by updating `action` for in-hand salary calculation to exact sentence case (`Calculate in hand salary`).
+  - Added themed icon support with `{ light, dark }` variants matching `@n8n/community-nodes/icon-prefer-themed-variants`.
+  - Added `index.js` explicitly to `files` field in `package.json` ensuring complete tarball packaging.
 
 ## [0.1.3] - 2026-10-16
 

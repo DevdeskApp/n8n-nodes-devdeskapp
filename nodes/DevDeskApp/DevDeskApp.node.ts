@@ -12,7 +12,7 @@ export class DevDeskApp implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'DevDeskApp',
 		name: 'devDeskApp',
-		icon: 'file:devdeskapp.svg',
+		icon: { light: 'file:devdeskapp.svg', dark: 'file:devdeskapp.svg' },
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
@@ -287,7 +287,7 @@ export class DevDeskApp implements INodeType {
 						name: 'CTC to In-Hand Salary',
 						value: 'ctcToInHand',
 						description: 'Calculate monthly take-home salary, PF, and estimated taxes from annual CTC',
-						action: 'Calculate in-hand salary',
+						action: 'Calculate in hand salary',
 					},
 				],
 				default: 'ctcToInHand',
