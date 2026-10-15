@@ -4,6 +4,13 @@ All notable changes to the `n8n-nodes-devdeskapp` package will be documented in 
 
 ---
 
+## [0.1.3] - 2026-10-16
+
+### Changed
+- **n8n Community Review Linter Compliance**:
+  - Normalized action descriptions and parameter options to strict sentence case and title case.
+  - Formatted casing options for `Snake_Case` and `UUID V4` complying with official n8n linter rules.
+
 ## [0.1.2] - 2026-10-16
 
 ### Added
