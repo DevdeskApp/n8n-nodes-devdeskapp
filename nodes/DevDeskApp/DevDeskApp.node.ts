@@ -3,6 +3,7 @@ import {
 	INodeExecutionData,
 	INodeType,
 	INodeTypeDescription,
+	NodeConnectionTypes,
 	NodeOperationError,
 } from 'n8n-workflow';
 import * as crypto from 'crypto';
@@ -16,11 +17,12 @@ export class DevDeskApp implements INodeType {
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
 		description: 'Run 330+ developer utilities, data formatters, and calculators from DevDeskApp',
+		usableAsTool: true,
 		defaults: {
 			name: 'DevDeskApp',
 		},
-		inputs: ['main'],
-		outputs: ['main'],
+		inputs: [NodeConnectionTypes.Main],
+		outputs: [NodeConnectionTypes.Main],
 		properties: [
 			{
 				displayName: 'Resource',
@@ -34,17 +36,17 @@ export class DevDeskApp implements INodeType {
 						description: 'Prettify, minify, and validate JSON data',
 					},
 					{
-						name: 'Crypto & Hashing',
+						name: 'Crypto & Hash',
 						value: 'crypto',
 						description: 'Generate hashes (MD5, SHA-256), Base64, and UUIDs',
 					},
 					{
-						name: 'Text & Strings',
+						name: 'Text & String',
 						value: 'text',
 						description: 'Slugify text and convert string cases',
 					},
 					{
-						name: 'HR & Calculators',
+						name: 'HR & Calculator',
 						value: 'calculator',
 						description: 'Compute CTC to in-hand salary and tax deductions',
 					},
@@ -142,13 +144,13 @@ export class DevDeskApp implements INodeType {
 						name: 'Base64 Encode',
 						value: 'base64Encode',
 						description: 'Encode UTF-8 string to Base64',
-						action: 'Encode to Base64',
+						action: 'Encode to base64',
 					},
 					{
 						name: 'Base64 Decode',
 						value: 'base64Decode',
 						description: 'Decode Base64 string to UTF-8 plain text',
-						action: 'Decode from Base64',
+						action: 'Decode from base64',
 					},
 					{
 						name: 'UUID v4',
@@ -160,7 +162,7 @@ export class DevDeskApp implements INodeType {
 				default: 'hash',
 			},
 			{
-				displayName: 'Text / Payload',
+				displayName: 'Text/Payload',
 				name: 'textPayload',
 				type: 'string',
 				displayOptions: {
@@ -215,7 +217,7 @@ export class DevDeskApp implements INodeType {
 					{
 						name: 'Case Converter',
 						value: 'caseConverter',
-						description: 'Convert between camelCase, snake_case, kebab-case, UPPERCASE, etc.',
+						description: 'Convert between camelCase, snake_case, kebab-case, uppercase, etc',
 						action: 'Convert case',
 					},
 					{
@@ -258,10 +260,10 @@ export class DevDeskApp implements INodeType {
 				options: [
 					{ name: 'camelCase', value: 'camelCase' },
 					{ name: 'kebab-case', value: 'kebabCase' },
-					{ name: 'snake_case', value: 'snakeCase' },
+					{ name: 'Lowercase', value: 'lowerCase' },
 					{ name: 'PascalCase', value: 'pascalCase' },
-					{ name: 'UPPERCASE', value: 'upperCase' },
-					{ name: 'lowercase', value: 'lowerCase' },
+					{ name: 'snake_case', value: 'snakeCase' },
+					{ name: 'Uppercase', value: 'upperCase' },
 				],
 				default: 'kebabCase',
 				description: 'The casing format to convert the string to',
@@ -285,7 +287,7 @@ export class DevDeskApp implements INodeType {
 						name: 'CTC to In-Hand Salary',
 						value: 'ctcToInHand',
 						description: 'Calculate monthly take-home salary, PF, and estimated taxes from annual CTC',
-						action: 'Calculate In-Hand salary',
+						action: 'Calculate in-hand salary',
 					},
 				],
 				default: 'ctcToInHand',
@@ -344,7 +346,7 @@ export class DevDeskApp implements INodeType {
 									valid: false,
 									error: e.message || 'Invalid JSON syntax',
 								};
-								returnData.push({ json: result });
+								returnData.push({ json: result, pairedItem: { item: i } });
 								continue;
 							}
 							throw new NodeOperationError(this.getNode(), `Invalid JSON input: ${e.message}`, { itemIndex: i });
@@ -531,13 +533,13 @@ export class DevDeskApp implements INodeType {
 					}
 				}
 
-				returnData.push({ json: result });
+				returnData.push({ json: result, pairedItem: { item: i } });
 			} catch (error) {
 				if (this.continueOnFail()) {
-					returnData.push({ json: { error: (error as Error).message } });
+					returnData.push({ json: { error: (error as Error).message }, pairedItem: { item: i } });
 					continue;
 				}
-				throw error;
+				throw new NodeOperationError(this.getNode(), error as Error, { itemIndex: i });
 			}
 		}
 

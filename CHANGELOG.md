@@ -4,6 +4,20 @@ All notable changes to the `n8n-nodes-devdeskapp` package will be documented in 
 
 ---
 
+## [0.1.2] - 2026-10-16
+
+### Added
+- **Official n8n Community Node Verification & Compliance**:
+  - Added `peerDependencies` with `"n8n-workflow": "*"` in `package.json` matching n8n community verification standards.
+  - Enabled `usableAsTool: true` on node description for n8n AI agent and tool integration.
+  - Replaced literal connection strings with `NodeConnectionTypes.Main`.
+  - Added explicit `pairedItem: { item: i }` on execution output data to maintain input-output item linking.
+  - Wrapped error handling with `NodeOperationError` for standardized diagnostics.
+  - Added root `index.js` module export.
+- **Documentation & Standards Revamp**:
+  - Comprehensive update to `README.md` following official n8n community node guidelines.
+  - Removed all em-dash and en-dash typography characters across the entire project.
+
 ## [0.1.1] - 2026-10-15
 
 ### Added

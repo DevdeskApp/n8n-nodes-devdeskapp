@@ -1,74 +1,122 @@
 # n8n-nodes-devdeskapp
 
 <p align="center">
-  <img src="nodes/DevDeskApp/devdeskapp.svg" width="96" height="96" alt="DevDeskApp Logo" />
+  <img src="https://raw.githubusercontent.com/DevdeskApp/n8n-nodes-devdeskapp/master/nodes/DevDeskApp/devdeskapp.svg" width="96" height="96" alt="DevDeskApp Logo" />
 </p>
 
-[![npm version](https://badge.fury.io/js/n8n-nodes-devdeskapp.svg)](https://www.npmjs.com/package/n8n-nodes-devdeskapp)
-[![n8n community node](https://img.shields.io/badge/n8n-community%20node-orange.svg)](https://n8n.io)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+<p align="center">
+  <strong>Official n8n Community Node for DevDeskApp developer utilities, data converters, and calculators.</strong>
+</p>
 
-Official [n8n](https://n8n.io/) community node for [DevDeskApp](https://www.devdeskapp.com) — access 330+ client-side developer utilities, converters, formatters, and financial calculators directly within your automated workflows.
-
----
-
-## ⚡ Features & Supported Tools
-
-* **JSON & Data Formatters:**
-  * **Prettify / Format:** Indent single or nested payloads (2 spaces, 4 spaces, or Tabs).
-  * **Minify:** Strip whitespace from messy payloads.
-  * **Validate:** Validate syntax safely with line/character error diagnostics.
-* **Cryptography & Security:**
-  * **Cryptographic Hashes:** Generate MD5, SHA-1, SHA-256, and SHA-512 hashes.
-  * **Base64 Encoding & Decoding:** Bidirectional UTF-8 / Base64 conversions.
-  * **UUID Generator:** Generate RFC 4122 v4 UUIDs for tracing.
-* **Text & Strings:**
-  * **Slugify:** Clean strings into URL-safe, SEO-friendly slugs.
-  * **Case Converter:** Convert between camelCase, kebab-case, snake_case, PascalCase, UPPERCASE, and lowercase.
-* **HR & Financial Calculators:**
-  * **CTC to In-Hand Calculator:** Convert annual package (CTC) into monthly in-hand net salary, statutory PF, professional tax, and estimated income tax deductions.
-* **100% Local & Zero Latency:** Runs entirely in your local n8n execution environment with zero API costs, zero data transfer to external servers, and enterprise data privacy.
+<p align="center">
+  <a href="https://www.npmjs.com/package/n8n-nodes-devdeskapp"><img src="https://img.shields.io/npm/v/n8n-nodes-devdeskapp.svg" alt="npm version" /></a>
+  <a href="https://www.npmjs.com/package/n8n-nodes-devdeskapp"><img src="https://img.shields.io/npm/dm/n8n-nodes-devdeskapp.svg" alt="npm downloads" /></a>
+  <a href="https://n8n.io"><img src="https://img.shields.io/badge/n8n-community%20node-orange.svg" alt="n8n community node" /></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT" /></a>
+</p>
 
 ---
 
-## 📁 Ready-to-Use Workflow Templates
+## Overview
 
-Pre-built workflow templates are available in the [`templates/`](templates/) directory:
+[DevDeskApp](https://www.devdeskapp.com) provides 330+ client-side developer utilities, converters, formatters, and financial calculators.
 
-1. **[Webhook JSON Sanitizer & Security Hasher](templates/webhook-json-sanitizer.json):**
-   * *Flow:* Webhook Ingest $\rightarrow$ JSON Prettify $\rightarrow$ SHA-256 Digest $\rightarrow$ UUID Tracing $\rightarrow$ Formatted Response.
-2. **[Automated Candidate Offer & CTC Salary Breakdown](templates/employee-ctc-calculator.json):**
-   * *Flow:* Candidate Input $\rightarrow$ Slugifier $\rightarrow$ In-Hand Salary Calculation $\rightarrow$ Formal Offer Letter Payload.
-
-👉 **See the complete [TEMPLATES-GUIDE.md](TEMPLATES-GUIDE.md) for step-by-step import instructions and JSON output schemas.**
+This official community node integrates these utilities directly into your automated [n8n](https://n8n.io) workflows, executing 100% locally with zero external API calls, zero latency, and complete data privacy.
 
 ---
 
-## 🚀 Installation
+## Operations & Capabilities
 
-In your n8n self-hosted or cloud instance:
-
-1. Go to **Settings > Community Nodes**.
-2. Select **Install a community node**.
-3. Enter `n8n-nodes-devdeskapp` in the **npm Package Name** field.
-4. Agree to the risks of installing community packages and click **Install**.
-
----
-
-## 🔒 Privacy & Security
-
-DevDeskApp nodes process all inputs inside your local n8n runner container. No payloads, tokens, or outputs are ever transmitted to any external third-party servers.
-
----
-
-## 🌐 Links & Resources
-
-* **Web Utilities:** [https://www.devdeskapp.com](https://www.devdeskapp.com)
-* **GitHub Repository:** [https://github.com/DevdeskApp/n8n-nodes-devdeskapp](https://github.com/DevdeskApp/n8n-nodes-devdeskapp)
-* **Issues & Feature Requests:** [https://github.com/DevdeskApp/n8n-nodes-devdeskapp/issues](https://github.com/DevdeskApp/n8n-nodes-devdeskapp/issues)
+| Resource | Operation | Description |
+| :--- | :--- | :--- |
+| **JSON Utility** | **Prettify / Format** | Format raw or minified JSON with customizable 2-space, 4-space, or Tab indentation |
+| **JSON Utility** | **Minify** | Strip whitespace from JSON payloads for compact storage and faster network payloads |
+| **JSON Utility** | **Validate** | Validate JSON structure safely and return syntax diagnostics without failing workflows |
+| **Crypto & Hash** | **Hash** | Generate cryptographic hashes: MD5, SHA-1, SHA-256, and SHA-512 |
+| **Crypto & Hash** | **Base64 Encode** | Encode plain UTF-8 text strings into Base64 strings |
+| **Crypto & Hash** | **Base64 Decode** | Decode Base64 strings back to clean UTF-8 text |
+| **Crypto & Hash** | **UUID v4** | Generate cryptographically secure RFC 4122 v4 UUID identifiers |
+| **Text & String** | **Slugify String** | Convert text strings into clean, lowercase, URL-safe SEO slugs |
+| **Text & String** | **Case Converter** | Convert casing to camelCase, kebab-case, snake_case, PascalCase, Uppercase, or Lowercase |
+| **Text & String** | **URL Encode** | Encode text into RFC 3986 percentage-encoded strings for URL queries and payloads |
+| **Text & String** | **URL Decode** | Decode percentage-encoded URL strings back to readable UTF-8 text |
+| **HR & Calculator** | **CTC to In-Hand** | Compute Indian income tax, standard deductions, EPF, professional tax, and net monthly take-home salary from annual CTC |
 
 ---
 
-## 📄 License
+## Prerequisites
 
-[MIT](LICENSE) © 2026 DevDeskApp Community
+- **n8n**: Version 1.0.0 or later (tested up to v2.8.4+)
+- **Node.js**: Version 18.x or later (for self-hosted environments)
+- **Authentication**: No external credentials or API keys required. All operations run directly in your local execution environment.
+
+---
+
+## Installation
+
+### Method 1: Community Nodes (Recommended)
+
+1. Open your n8n workspace.
+2. Navigate to **Settings** > **Community Nodes**.
+3. Select **Install a community node**.
+4. In the **npm Package Name** field, enter:
+   ```text
+   n8n-nodes-devdeskapp
+   ```
+5. Check the agreement checkbox and click **Install**.
+6. Search for `DevDeskApp` in the node palette to add it to any workflow.
+
+### Method 2: Docker / Self-Hosted
+
+If running n8n via Docker, mount the community nodes folder or install into your custom nodes directory:
+
+```bash
+docker exec -u node -it n8n-container npm install n8n-nodes-devdeskapp
+```
+
+Or add to your `Dockerfile`:
+
+```dockerfile
+USER node
+RUN cd ~/.n8n/nodes && npm install n8n-nodes-devdeskapp
+```
+
+---
+
+## Usage Example
+
+### Formatting Webhook Payloads and Creating Traced Records
+
+1. Add a **Webhook** node to receive incoming data.
+2. Connect the **DevDeskApp** node:
+   - **Resource**: `JSON Utility`
+   - **Operation**: `Prettify / Format`
+   - **JSON Input**: `={{ $json.body }}`
+   - **Indentation**: `2 Spaces`
+3. Connect a second **DevDeskApp** node:
+   - **Resource**: `Crypto & Hash`
+   - **Operation**: `UUID v4`
+4. Use the resulting formatted payload and unique UUID in your downstream database, Slack, or email notifications.
+
+---
+
+## Privacy & Security
+
+- **100% Local Execution**: All computations (formatting, hashing, encoding, salary calculations) run strictly inside your n8n instance.
+- **Zero External Telemetry**: No payload data, tokens, or execution logs are ever transmitted to DevDeskApp or any third-party service.
+- **OIDC Provenance**: Official packages are built and signed with cryptographic Sigstore Provenance directly through GitHub Actions.
+
+---
+
+## Resources & Links
+
+- **Web Utilities**: [https://www.devdeskapp.com](https://www.devdeskapp.com)
+- **GitHub Repository**: [https://github.com/DevdeskApp/n8n-nodes-devdeskapp](https://github.com/DevdeskApp/n8n-nodes-devdeskapp)
+- **Issue Tracker**: [https://github.com/DevdeskApp/n8n-nodes-devdeskapp/issues](https://github.com/DevdeskApp/n8n-nodes-devdeskapp/issues)
+- **n8n Community Forum**: [https://community.n8n.io](https://community.n8n.io)
+
+---
+
+## License
+
+[MIT](LICENSE) (c) 2026 DevDeskApp Community
