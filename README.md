@@ -9,6 +9,8 @@
 </p>
 
 <p align="center">
+  <a href="https://docs.devdeskapp.com"><img src="https://img.shields.io/badge/docs-docs.devdeskapp.com-6366f1.svg" alt="Documentation" /></a>
+  <a href="https://n8n.io/workflows/21017-format-json-and-secure-hr-payloads-with-devdeskapp-utilities"><img src="https://img.shields.io/badge/n8n.io-Template_%2321017-10b981.svg" alt="Template #21017" /></a>
   <a href="https://www.npmjs.com/package/n8n-nodes-devdeskapp"><img src="https://img.shields.io/npm/v/n8n-nodes-devdeskapp.svg" alt="npm version" /></a>
   <a href="https://www.npmjs.com/package/n8n-nodes-devdeskapp"><img src="https://img.shields.io/npm/dm/n8n-nodes-devdeskapp.svg" alt="npm downloads" /></a>
   <a href="https://n8n.io"><img src="https://img.shields.io/badge/n8n-community%20node-orange.svg" alt="n8n community node" /></a>
@@ -20,6 +22,10 @@
 ## Overview
 
 [DevDeskApp](https://www.devdeskapp.com) provides 330+ client-side developer utilities, converters, formatters, and financial calculators.
+
+👉 **Official Documentation Portal**: [https://docs.devdeskapp.com](https://docs.devdeskapp.com)  
+👉 **Live n8n Template #21017**: [Format JSON & Secure HR Payloads with DevDeskApp](https://n8n.io/workflows/21017-format-json-and-secure-hr-payloads-with-devdeskapp-utilities)  
+👉 **AI Agents & LLM Function Calling**: [AI Agent Guide](https://docs.devdeskapp.com/solutions/ai-agents)
 
 This official community node integrates these utilities directly into your automated [n8n](https://n8n.io) workflows, executing 100% locally with zero external API calls, zero latency, and complete data privacy.
 
@@ -110,10 +116,13 @@ RUN cd ~/.n8n/nodes && npm install n8n-nodes-devdeskapp
 
 ## Resources & Links
 
-- **Web Utilities**: [https://www.devdeskapp.com](https://www.devdeskapp.com)
-- **GitHub Repository**: [https://github.com/DevdeskApp/n8n-nodes-devdeskapp](https://github.com/DevdeskApp/n8n-nodes-devdeskapp)
-- **Issue Tracker**: [https://github.com/DevdeskApp/n8n-nodes-devdeskapp/issues](https://github.com/DevdeskApp/n8n-nodes-devdeskapp/issues)
-- **n8n Community Forum**: [https://community.n8n.io](https://community.n8n.io)
+- 📖 **Documentation Portal**: [https://docs.devdeskapp.com](https://docs.devdeskapp.com)
+- 🌟 **Official n8n Template #21017**: [https://n8n.io/workflows/21017](https://n8n.io/workflows/21017-format-json-and-secure-hr-payloads-with-devdeskapp-utilities)
+- 🤖 **AI Agents & LLM Function Calling**: [https://docs.devdeskapp.com/solutions/ai-agents](https://docs.devdeskapp.com/solutions/ai-agents)
+- 🌐 **Web Utilities Suite**: [https://www.devdeskapp.com](https://www.devdeskapp.com)
+- 🐙 **GitHub Repository**: [https://github.com/DevdeskApp/n8n-nodes-devdeskapp](https://github.com/DevdeskApp/n8n-nodes-devdeskapp)
+- 💬 **n8n Community Forum**: [https://community.n8n.io](https://community.n8n.io)
+- 🐛 **Issue Tracker**: [https://github.com/DevdeskApp/n8n-nodes-devdeskapp/issues](https://github.com/DevdeskApp/n8n-nodes-devdeskapp/issues)
 
 ---
 
