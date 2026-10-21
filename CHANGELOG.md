@@ -2,6 +2,19 @@
 
 All notable changes to the `n8n-nodes-devdeskapp` package will be documented in this file.
 
+## [0.1.5] - 2026-10-22
+
+### Added
+- **7 New E-Commerce & FinTech Operations**:
+  - **WhatsApp Interactive Payload**: Meta Cloud API v20.0 interactive button generator with quick-reply buttons (Max 3, 20 chars limit) for order confirmation, shipping updates, and abandoned cart recovery.
+  - **Dynamic UPI QR & URI Generator**: Generates NPCI-compliant payment strings (upi://pay) with merchant VPA, order amount, and transaction reference.
+  - **Profit Margin & ROAS Calculator**: Calculates net profit, margin percentage, break-even ROAS, and RTO return loss for Shopify, Amazon, and Flipkart.
+  - **Webhook Signature Verifier**: Cryptographic HMAC-SHA256 validation for Razorpay (Hex), Shopify (Base64), and Stripe (timestamped v1) webhook events.
+  - **Catalog Schema Mapper**: Cross-platform catalog mapping between Shopify, WooCommerce, and Google Merchant Center.
+  - **GST JSON to Tabular Data**: In-workflow parser flattening GSTR-1 (B2B, B2CS), GSTR-3B, and GSTR-2B offline JSON files into flat tabular rows.
+  - **Shipping Label Cropper Coordinates**: Calculates 4x6 / A6 thermal label crop box coordinates and pixel dimensions at 203 & 300 DPI for marketplace invoices.
+- Extended automated test suite to 20 comprehensive unit and integration tests passing with 100% accuracy.
+
 ## [0.1.4] - 2026-10-16
 
 ### Fixed

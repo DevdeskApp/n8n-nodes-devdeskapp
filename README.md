@@ -47,6 +47,13 @@ This official community node integrates these utilities directly into your autom
 | **Text & String** | **URL Encode** | Encode text into RFC 3986 percentage-encoded strings for URL queries and payloads |
 | **Text & String** | **URL Decode** | Decode percentage-encoded URL strings back to readable UTF-8 text |
 | **HR & Calculator** | **CTC to In-Hand** | Compute Indian income tax, standard deductions, EPF, professional tax, and net monthly take-home salary from annual CTC |
+| **E-Commerce & FinTech** | **WhatsApp Interactive Payload** | Build Meta Cloud API v20.0 interactive button payloads for order confirmation, shipping alerts, and abandoned cart recovery |
+| **E-Commerce & FinTech** | **Dynamic UPI QR & URI** | Generate NPCI-compliant dynamic UPI payment URI and parameters for order checkout |
+| **E-Commerce & FinTech** | **Profit Margin & ROAS** | Calculate net profit, break-even ROAS, and Indian COD RTO shipping loss for Amazon, Flipkart, and Shopify |
+| **E-Commerce & FinTech** | **Webhook Verifier** | Verify cryptographic HMAC-SHA256 signatures for Razorpay (hex), Shopify (base64), and Stripe (timestamped v1) |
+| **E-Commerce & FinTech** | **Catalog Schema Mapper** | Transform and map product catalogs between Shopify, WooCommerce, and Google Merchant Center |
+| **E-Commerce & FinTech** | **GST JSON to Tabular Data** | Flatten government GST offline tool JSON files (GSTR-1 B2B/B2CS, GSTR-3B, GSTR-2B) into tabular invoice rows |
+| **E-Commerce & FinTech** | **Shipping Label Cropper** | Calculate exact thermal print viewport coordinates (4x6 / A6) and pixel dimensions at 203 & 300 DPI |
 
 ---
 

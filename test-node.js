@@ -8,8 +8,11 @@ async function runTests() {
   function createMockExecuteFunctions(parameters, inputItems = [{}]) {
     return {
       getInputData: () => inputItems.map(item => ({ json: item })),
-      getNodeParameter: (paramName, index) => {
-        return parameters[paramName];
+      getNodeParameter: (paramName, index, defaultValue) => {
+        if (parameters[paramName] !== undefined) {
+          return parameters[paramName];
+        }
+        return defaultValue !== undefined ? defaultValue : '';
       },
       getNode: () => ({ name: 'DevDeskApp' }),
       continueOnFail: () => false,
@@ -215,7 +218,232 @@ async function runTests() {
     console.log('✓ Test 13: URL Decode passed');
   }
 
-  console.log('\n🎉 ALL 13 UNIT TESTS PASSED WITH ZERO ERRORS!');
+  // Test 14: E-Commerce WhatsApp Interactive Payload Builder
+  {
+    const mockCtx = createMockExecuteFunctions({
+      resource: 'ecommerce',
+      operation: 'whatsappPayload',
+      eventType: 'orderConfirmation',
+      recipientPhone: '+91 98765-43210',
+      headerText: 'Order Confirmed! 📦',
+      bodyText: 'Hi Customer, your order #4092 has been shipped.',
+      footerText: 'Powered by DevDeskApp',
+      buttons: 'Confirm Delivery, Change Address, Talk to Support, Extra Fourth Button Over Limit',
+    });
+    const result = await node.execute.call(mockCtx);
+    const data = result[0][0].json;
+    assert.strictEqual(data.to, '919876543210');
+    assert.strictEqual(data.event, 'orderConfirmation');
+    assert.strictEqual(data.buttonCount, 3);
+    assert.strictEqual(data.buttons.length, 3);
+    assert.strictEqual(data.buttons[0].title, 'Confirm Delivery');
+    assert.strictEqual(data.payload.messaging_product, 'whatsapp');
+    assert.strictEqual(data.payload.interactive.action.buttons.length, 3);
+    assert.strictEqual(data.payload.interactive.header.text, 'Order Confirmed! 📦');
+    console.log('✓ Test 14: WhatsApp Interactive Payload passed');
+  }
+
+  // Test 15: E-Commerce Dynamic UPI QR & URI Generator
+  {
+    const mockCtx = createMockExecuteFunctions({
+      resource: 'ecommerce',
+      operation: 'upiQr',
+      payeeVpa: 'merchant@icici',
+      payeeName: 'DevDesk Store',
+      amount: 499.00,
+      transactionRef: 'ORD4092',
+      transactionNote: 'Order ORD4092',
+      currency: 'INR',
+    });
+    const result = await node.execute.call(mockCtx);
+    const data = result[0][0].json;
+    assert.strictEqual(data.payeeVpa, 'merchant@icici');
+    assert.strictEqual(data.amount, 499.00);
+    assert(data.upiUri.startsWith('upi://pay?'));
+    assert(data.upiUri.includes('pa=merchant%40icici'));
+    assert(data.upiUri.includes('am=499.00'));
+    assert(data.upiUri.includes('tr=ORD4092'));
+    console.log('✓ Test 15: Dynamic UPI QR & URI passed');
+  }
+
+  // Test 16: E-Commerce Profit Margin & ROAS Calculator
+  {
+    const mockCtx = createMockExecuteFunctions({
+      resource: 'ecommerce',
+      operation: 'profitCalculator',
+      platform: 'shopify',
+      sellingPrice: 999,
+      cogs: 350,
+      shippingFee: 70,
+      adSpend: 180,
+      rtoRatePct: 15,
+      commissionFeePct: 0,
+      closingFee: 0,
+      gstRatePct: 18,
+    });
+    const result = await node.execute.call(mockCtx);
+    const data = result[0][0].json;
+    assert.strictEqual(data.sellingPrice, 999);
+    assert(data.effectiveRevenue > 0);
+    assert(data.breakEvenRoas > 0);
+    assert(data.breakdown.cogsDelivered > 0);
+    assert(data.breakdown.rtoLoss > 0);
+    console.log('✓ Test 16: Profit Margin & ROAS Calculator passed');
+  }
+
+  // Test 17: E-Commerce Webhook Signature Verifier
+  {
+    const crypto = require('crypto');
+    const secret = 'whsec_test_secret_key_123';
+    const payload = JSON.stringify({ event: 'payment.captured', id: 'pay_12345', amount: 49900 });
+
+    // 17a. Razorpay (Hex)
+    const razorpaySig = crypto.createHmac('sha256', secret).update(payload).digest('hex');
+    const mockCtxRazorpay = createMockExecuteFunctions({
+      resource: 'ecommerce',
+      operation: 'webhookVerifier',
+      provider: 'razorpay',
+      rawBody: payload,
+      signatureHeader: razorpaySig,
+      webhookSecret: secret,
+      webhookEvent: 'payment.captured',
+    });
+    const resultRazorpay = await node.execute.call(mockCtxRazorpay);
+    assert.strictEqual(resultRazorpay[0][0].json.verified, true);
+    assert.strictEqual(resultRazorpay[0][0].json.provider, 'razorpay');
+
+    // 17b. Shopify (Base64)
+    const shopifySig = crypto.createHmac('sha256', secret).update(payload, 'utf8').digest('base64');
+    const mockCtxShopify = createMockExecuteFunctions({
+      resource: 'ecommerce',
+      operation: 'webhookVerifier',
+      provider: 'shopify',
+      rawBody: payload,
+      signatureHeader: shopifySig,
+      webhookSecret: secret,
+      webhookEvent: 'orders/create',
+    });
+    const resultShopify = await node.execute.call(mockCtxShopify);
+    assert.strictEqual(resultShopify[0][0].json.verified, true);
+    assert.strictEqual(resultShopify[0][0].json.provider, 'shopify');
+
+    // 17c. Stripe (t=,v1=)
+    const timestamp = Math.floor(Date.now() / 1000).toString();
+    const stripeSig = crypto.createHmac('sha256', secret).update(`${timestamp}.${payload}`).digest('hex');
+    const mockCtxStripe = createMockExecuteFunctions({
+      resource: 'ecommerce',
+      operation: 'webhookVerifier',
+      provider: 'stripe',
+      rawBody: payload,
+      signatureHeader: `t=${timestamp},v1=${stripeSig}`,
+      webhookSecret: secret,
+      webhookEvent: 'charge.succeeded',
+    });
+    const resultStripe = await node.execute.call(mockCtxStripe);
+    assert.strictEqual(resultStripe[0][0].json.verified, true);
+    assert.strictEqual(resultStripe[0][0].json.provider, 'stripe');
+    console.log('✓ Test 17: Webhook Signature Verifier passed (Razorpay, Shopify, Stripe)');
+  }
+
+  // Test 18: E-Commerce Catalog Schema Mapper
+  {
+    const mockCtx = createMockExecuteFunctions({
+      resource: 'ecommerce',
+      operation: 'catalogMapper',
+      sourcePlatform: 'woocommerce',
+      targetPlatform: 'shopify',
+      catalogInput: JSON.stringify([
+        {
+          Name: 'Ergonomic Desk Mat',
+          SKU: 'DM-001',
+          'Regular price': 799,
+          'Sale price': 649,
+          Description: '<p>Premium vegan leather desk mat</p>',
+          Stock: 25,
+          Categories: 'Accessories',
+          Images: 'https://example.com/mat.jpg',
+        },
+      ]),
+    });
+    const result = await node.execute.call(mockCtx);
+    const data = result[0][0].json;
+    assert.strictEqual(data.totalItems, 1);
+    assert.strictEqual(data.items[0].Title, 'Ergonomic Desk Mat');
+    assert.strictEqual(data.items[0]['Variant SKU'], 'DM-001');
+    assert.strictEqual(data.items[0]['Variant Price'], '799.00');
+    assert.strictEqual(data.items[0]['Variant Compare At Price'], '649.00');
+    assert.strictEqual(data.items[0].Handle, 'ergonomic-desk-mat');
+    console.log('✓ Test 18: Catalog Schema Mapper passed');
+  }
+
+  // Test 19: E-Commerce GST JSON to Tabular Data
+  {
+    const mockGstr = {
+      gstin: '27AAAAA0000A1Z5',
+      fp: '032026',
+      b2b: [
+        {
+          ctin: '29BBBBB1111B1Z2',
+          inv: [
+            {
+              inum: 'INV-2026-001',
+              idt: '15-03-2026',
+              val: 1180,
+              itms: [
+                {
+                  num: 1,
+                  itm_det: {
+                    rt: 18,
+                    txval: 1000,
+                    iamt: 180,
+                    camt: 0,
+                    samt: 0,
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+    const mockCtx = createMockExecuteFunctions({
+      resource: 'ecommerce',
+      operation: 'gstJsonToTable',
+      returnType: 'gstr1',
+      gstSection: 'all',
+      gstJsonInput: JSON.stringify(mockGstr),
+    });
+    const result = await node.execute.call(mockCtx);
+    const data = result[0][0].json;
+    assert.strictEqual(data.gstin, '27AAAAA0000A1Z5');
+    assert.strictEqual(data.totalRows, 1);
+    assert.strictEqual(data.rows[0].invoiceNumber, 'INV-2026-001');
+    assert.strictEqual(data.rows[0].taxableValue, 1000);
+    assert.strictEqual(data.rows[0].igst, 180);
+    console.log('✓ Test 19: GST JSON to Tabular Data passed');
+  }
+
+  // Test 20: E-Commerce Shipping Label Cropper Coordinates
+  {
+    const mockCtx = createMockExecuteFunctions({
+      resource: 'ecommerce',
+      operation: 'shippingLabelCrop',
+      carrier: 'flipkart',
+      pageFormat: 'a4',
+      labelSize: '4x6',
+      thermalDpi: 203,
+    });
+    const result = await node.execute.call(mockCtx);
+    const data = result[0][0].json;
+    assert.strictEqual(data.carrier, 'flipkart');
+    assert.strictEqual(data.cropBox.width, 547);
+    assert.strictEqual(data.cropBox.height, 370);
+    assert.strictEqual(data.dimensions.pixels.width, 812);
+    assert.strictEqual(data.dimensions.pixels.height, 1218);
+    console.log('✓ Test 20: Shipping Label Cropper Coordinates passed');
+  }
+
+  console.log('\n🎉 ALL 20 UNIT TESTS PASSED WITH ZERO ERRORS!');
 }
 
 runTests().catch(err => {
