@@ -1,11 +1,16 @@
 {
   "name": "n8n-nodes-devdeskapp",
-  "version": "0.1.4",
-  "description": "Official n8n community node package for DevDeskApp developer utilities, converters, and calculators.",
+  "version": "0.1.5",
+  "description": "Official n8n community node package for DevDeskApp developer utilities, e-commerce tools, converters, and calculators.",
   "keywords": [
     "n8n-community-node-package",
     "devdeskapp",
     "developer-utilities",
+    "ecommerce",
+    "whatsapp-cloud-api",
+    "upi-qr",
+    "profit-calculator",
+    "webhook-verifier",
     "json-formatter",
     "ctc-calculator",
     "converters"
