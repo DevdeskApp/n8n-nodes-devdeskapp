@@ -16,7 +16,8 @@ export class DevDeskApp implements INodeType {
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
-		description: 'Run 340+ developer utilities, e-commerce tools, formatters, and calculators from DevDeskApp',
+		description:
+			'Build WhatsApp Interactive payloads, generate UPI QR codes, verify Razorpay/Shopify/Stripe webhooks, calculate profit margins and GST, format JSON, generate hashes, and manipulate text — all locally without external API calls',
 		usableAsTool: true,
 		defaults: {
 			name: 'DevDeskApp',
@@ -31,19 +32,14 @@ export class DevDeskApp implements INodeType {
 				noDataExpression: true,
 				options: [
 					{
-						name: 'JSON Utility',
-						value: 'json',
-						description: 'Prettify, minify, and validate JSON data',
-					},
-					{
 						name: 'Crypto & Hash',
 						value: 'crypto',
 						description: 'Generate hashes (MD5, SHA-256), Base64, and UUIDs',
 					},
 					{
-						name: 'Text & String',
-						value: 'text',
-						description: 'Slugify text and convert string cases',
+						name: 'E-Commerce & FinTech',
+						value: 'ecommerce',
+						description: 'WhatsApp payloads, dynamic UPI QR, profit calculation, GST flattener, catalog mapper, and webhook verifier',
 					},
 					{
 						name: 'HR & Calculator',
@@ -51,9 +47,14 @@ export class DevDeskApp implements INodeType {
 						description: 'Compute CTC to in-hand salary and tax deductions',
 					},
 					{
-						name: 'E-Commerce & FinTech',
-						value: 'ecommerce',
-						description: 'WhatsApp payloads, dynamic UPI QR, profit calculation, GST flattener, catalog mapper, and webhook verifier',
+						name: 'JSON Utility',
+						value: 'json',
+						description: 'Prettify, minify, and validate JSON data',
+					},
+					{
+						name: 'Text & String',
+						value: 'text',
+						description: 'Slugify text and convert string cases',
 					},
 				],
 				default: 'json',
@@ -339,10 +340,10 @@ export class DevDeskApp implements INodeType {
 				},
 				options: [
 					{
-						name: 'WhatsApp Interactive Payload',
-						value: 'whatsappPayload',
-						description: 'Build Meta WhatsApp Cloud API interactive button payload',
-						action: 'Build WhatsApp interactive message payload',
+						name: 'Catalog Schema Mapper',
+						value: 'catalogMapper',
+						description: 'Map product catalog data between Shopify, WooCommerce, and Google Merchant',
+						action: 'Map catalog items between platforms',
 					},
 					{
 						name: 'Dynamic UPI QR & URI',
@@ -351,10 +352,22 @@ export class DevDeskApp implements INodeType {
 						action: 'Generate NPCI dynamic UPI payment URI',
 					},
 					{
+						name: 'GST JSON to Tabular Data',
+						value: 'gstJsonToTable',
+						description: 'Flatten GSTR-1, GSTR-3B, or GSTR-2B JSON offline tool data into flat rows',
+						action: 'Flatten GST portal JSON to tabular rows',
+					},
+					{
 						name: 'Profit Margin & ROAS Calculator',
 						value: 'profitCalculator',
 						description: 'Calculate net profit margin, break-even ROAS, and RTO return loss',
-						action: 'Calculate profit margin and break-even ROAS',
+						action: 'Calculate profit margin and breakeven ROAS',
+					},
+					{
+						name: 'Shipping Label Cropper Coordinates',
+						value: 'shippingLabelCrop',
+						description: 'Compute exact thermal print crop box dimensions for marketplace invoices',
+						action: 'Compute shipping label thermal crop coordinates',
 					},
 					{
 						name: 'Webhook Signature Verifier',
@@ -363,22 +376,10 @@ export class DevDeskApp implements INodeType {
 						action: 'Verify payment webhook signature',
 					},
 					{
-						name: 'Catalog Schema Mapper',
-						value: 'catalogMapper',
-						description: 'Map product catalog data between Shopify, WooCommerce, and Google Merchant',
-						action: 'Map catalog items between platforms',
-					},
-					{
-						name: 'GST JSON to Tabular Data',
-						value: 'gstJsonToTable',
-						description: 'Flatten GSTR-1, GSTR-3B, or GSTR-2B JSON offline tool data into flat rows',
-						action: 'Flatten GST portal JSON to tabular rows',
-					},
-					{
-						name: 'Shipping Label Cropper Coordinates',
-						value: 'shippingLabelCrop',
-						description: 'Compute exact thermal print crop box dimensions for marketplace invoices',
-						action: 'Compute shipping label thermal crop coordinates',
+						name: 'WhatsApp Interactive Payload',
+						value: 'whatsappPayload',
+						description: 'Build Meta WhatsApp Cloud API interactive button payload',
+						action: 'Build interactive button message payload',
 					},
 				],
 				default: 'whatsappPayload',
@@ -869,11 +870,11 @@ export class DevDeskApp implements INodeType {
 					},
 				},
 				options: [
-					{ name: 'Flipkart Logistics', value: 'flipkart' },
 					{ name: 'Amazon ATS', value: 'amazon' },
-					{ name: 'Meesho / Shadowfax', value: 'meesho' },
-					{ name: 'Delhivery', value: 'delhivery' },
 					{ name: 'Custom / Generic A4', value: 'custom' },
+					{ name: 'Delhivery', value: 'delhivery' },
+					{ name: 'Flipkart Logistics', value: 'flipkart' },
+					{ name: 'Meesho / Shadowfax', value: 'meesho' },
 				],
 				default: 'flipkart',
 				description: 'Shipping carrier generating invoice and barcode label',
@@ -889,8 +890,8 @@ export class DevDeskApp implements INodeType {
 					},
 				},
 				options: [
-					{ name: 'A4 Standard (595 x 842 pt)', value: 'a4' },
-					{ name: 'Letter (612 x 792 pt)', value: 'letter' },
+					{ name: 'A4 Standard', value: 'a4', description: '595 x 842 pt' },
+					{ name: 'US Letter', value: 'letter', description: '612 x 792 pt' },
 				],
 				default: 'a4',
 				description: 'Source PDF page dimension',
@@ -906,7 +907,7 @@ export class DevDeskApp implements INodeType {
 					},
 				},
 				options: [
-					{ name: '4x6 Inch (100 x 150 mm)', value: '4x6' },
+					{ name: '4x6 Inch', value: '4x6', description: '100 x 150 mm' },
 					{ name: 'A6 Standard', value: 'a6' },
 				],
 				default: '4x6',
