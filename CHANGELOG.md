@@ -2,6 +2,17 @@
 
 All notable changes to the `n8n-nodes-devdeskapp` package will be documented in this file.
 
+## [0.1.6] - 2026-10-27
+
+### Fixed
+- Resolved all 8 `@n8n/scan-community-package` lint errors raised in n8n creator review:
+  - Alphabetized Resource, E-Commerce Operation, and Marketplace / Carrier options by name.
+  - Sentence-cased the WhatsApp Interactive Payload and Profit Margin & ROAS Calculator actions.
+  - Title-cased Page Format and Label Size option names (dimensions moved to option descriptions).
+
+### Changed
+- Node description now lists the operations this node actually provides instead of the full DevDeskApp platform tool count.
+
 ## [0.1.5] - 2026-10-22
 
 ### Added
