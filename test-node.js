@@ -190,6 +190,17 @@ async function runTests() {
     assert(data.breakdown.monthlyBasic > 0);
     assert(data.breakdown.employeePf > 0);
     assert.strictEqual(data.reference, 'https://www.devdeskapp.com/ctc-to-in-hand-calculator');
+    // New regime: taxable 11,03,400 is under 12L, so the 87A rebate makes tax zero
+    assert.strictEqual(data.breakdown.estimatedMonthlyTds, 0);
+
+    const tdsFor = async (annualCtc) => {
+      const ctx = createMockExecuteFunctions({ resource: 'calculator', operation: 'ctcToInHand', annualCtc, basicPercentage: 50 });
+      return (await node.execute.call(ctx))[0][0].json.breakdown.estimatedMonthlyTds;
+    };
+    // 13L: taxable 12,03,400, marginal relief caps tax at 3,400 + 4% cess = 3,536 a year
+    assert.strictEqual(await tdsFor(1300000), 295);
+    // 15L: taxable 14,03,400 -> 20,000 + 40,000 + 30,510 = 90,510 + 4% cess = 94,130 a year
+    assert.strictEqual(await tdsFor(1500000), 7844);
     console.log('✓ Test 11: CTC Calculator calculations passed');
   }
 
