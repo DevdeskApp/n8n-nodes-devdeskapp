@@ -145,6 +145,9 @@ async function runTests() {
     });
     const result = await node.execute.call(mockCtx);
     assert.strictEqual(result[0][0].json.slug, 'top-10-developer-tools-for-2026-beyond');
+    // Accented letters keep their base letter instead of being dropped.
+    const accentCtx = createMockExecuteFunctions({ resource: 'text', operation: 'slugify', textInput: 'Crème Brûlée à São Paulo' });
+    assert.strictEqual((await node.execute.call(accentCtx))[0][0].json.slug, 'creme-brulee-a-sao-paulo');
     console.log('✓ Test 9: Text Slugify passed');
   }
 
@@ -370,10 +373,37 @@ async function runTests() {
     assert.strictEqual(data.totalItems, 1);
     assert.strictEqual(data.items[0].Title, 'Ergonomic Desk Mat');
     assert.strictEqual(data.items[0]['Variant SKU'], 'DM-001');
-    assert.strictEqual(data.items[0]['Variant Price'], '799.00');
-    assert.strictEqual(data.items[0]['Variant Compare At Price'], '649.00');
+    // On sale: the sale price is what the customer pays, the regular price becomes compare-at.
+    assert.strictEqual(data.items[0]['Variant Price'], '649.00');
+    assert.strictEqual(data.items[0]['Variant Compare At Price'], '799.00');
     assert.strictEqual(data.items[0].Handle, 'ergonomic-desk-mat');
-    console.log('✓ Test 18: Catalog Schema Mapper passed');
+
+    // WooCommerce REST API shape (what the n8n WooCommerce node returns), including stock 0.
+    const restCtx = createMockExecuteFunctions({
+      resource: 'ecommerce',
+      operation: 'catalogMapper',
+      sourcePlatform: 'woocommerce',
+      targetPlatform: 'shopify',
+      catalogInput: JSON.stringify([
+        {
+          name: 'Cotton T-Shirt',
+          sku: 'TS-01',
+          regular_price: '499',
+          sale_price: '',
+          stock_quantity: 0,
+          images: [{ src: 'https://example.com/tee.jpg' }],
+          categories: [{ name: 'Apparel' }],
+        },
+      ]),
+    });
+    const rest = (await node.execute.call(restCtx))[0][0].json.items[0];
+    assert.strictEqual(rest.Title, 'Cotton T-Shirt');
+    assert.strictEqual(rest['Variant Price'], '499.00');
+    assert.strictEqual(rest['Variant Compare At Price'], '');
+    assert.strictEqual(rest['Variant Inventory Qty'], 0);
+    assert.strictEqual(rest['Image Src'], 'https://example.com/tee.jpg');
+    assert.strictEqual(rest['Standard Product Type'], 'Apparel');
+    console.log('✓ Test 18: Catalog Schema Mapper passed (CSV and REST API input)');
   }
 
   // Test 19: E-Commerce GST JSON to Tabular Data

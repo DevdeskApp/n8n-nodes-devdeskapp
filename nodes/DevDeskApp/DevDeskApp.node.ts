@@ -1029,6 +1029,8 @@ export class DevDeskApp implements INodeType {
 
 					if (operation === 'slugify') {
 						const slug = textInput
+							.normalize('NFKD')
+							.replace(/[\u0300-\u036f]/g, '') // é -> e, ü -> u (keep the base letter)
 							.toLowerCase()
 							.trim()
 							.replace(/[^\w\s-]/g, '')
@@ -1385,15 +1387,28 @@ export class DevDeskApp implements INodeType {
 						}
 
 						const mapped = itemsList.map((item, idx) => {
-							const title = item.title || item.Name || item['Product Name'] || item['Post Title'] || `Product ${idx + 1}`;
-							const sku = item.sku || item.SKU || `SKU-${idx + 1}`;
-							const price = Number(item.price || item.Price || item['Regular price'] || item['Variant Price'] || 0);
-							const compareAtPrice = Number(item.compareAtPrice || item['Sale price'] || item['Variant Compare At Price'] || 0) || null;
-							const description = item.description || item.Description || item['Post Content'] || '';
-							const stock = Number(item.stock || item.Stock || item['Variant Inventory Qty'] || 10);
+							// Accepts Shopify CSV, WooCommerce CSV / REST API and Google Merchant feed field names.
+							const num = (v: unknown) => {
+								const n = parseFloat(String(v ?? '').replace(/,/g, '')); // "649.00 INR" -> 649
+								return Number.isFinite(n) ? n : 0;
+							};
+							const title = item.title || item.Title || item.name || item.Name || item['Product Name'] || item['Post Title'] || `Product ${idx + 1}`;
+							const sku = item.sku || item.SKU || item['Variant SKU'] || item.offer_id
+								|| (sourcePlatform === 'googleMerchant' ? item.id : undefined) || `SKU-${idx + 1}`;
+							// Selling price is the sale price when one exists; the higher regular price becomes compare-at.
+							const regular = num(item.regular_price ?? item['Regular price']);
+							const sale = num(item.sale_price ?? item['Sale price']);
+							const listed = num(item.price ?? item.Price ?? item['Variant Price']);
+							const price = sale && (!listed || sale < listed) ? sale : (listed || regular);
+							const higher = Math.max(regular, listed);
+							const compareAtPrice = num(item.compareAtPrice ?? item['Variant Compare At Price']) || (price < higher ? higher : null);
+							const description = item.description || item.Description || item['Body (HTML)'] || item['Post Content'] || item.short_description || '';
+							const rawStock = item.stock ?? item.Stock ?? item.stock_quantity ?? item['Variant Inventory Qty']
+								?? (typeof item.availability === 'string' && /out/i.test(item.availability) ? 0 : undefined);
+							const stock = rawStock === undefined || rawStock === null || rawStock === '' ? 10 : Number(rawStock);
 							const handle = (item.handle || item.Handle || item.slug || title).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-							const image = item.image || item.Image || item['Image Src'] || item['Images'] || '';
-							const category = item.category || item.Category || item['Categories'] || 'General';
+							const image = item.image || item.Image || item['Image Src'] || item.images?.[0]?.src || (typeof item.Images === 'string' ? item.Images : '') || '';
+							const category = item.category || item.Category || item.categories?.[0]?.name || (typeof item.Categories === 'string' ? item.Categories : '') || 'General';
 
 							if (targetPlatform === 'shopify') {
 								return {
@@ -1418,8 +1433,8 @@ export class DevDeskApp implements INodeType {
 									SKU: sku,
 									Name: title,
 									Published: 1,
-									'Regular price': price.toFixed(2),
-									'Sale price': compareAtPrice ? compareAtPrice.toFixed(2) : '',
+									'Regular price': (compareAtPrice || price).toFixed(2),
+									'Sale price': compareAtPrice ? price.toFixed(2) : '',
 									Description: description,
 									Stock: stock,
 									Categories: category,
@@ -1433,7 +1448,9 @@ export class DevDeskApp implements INodeType {
 									link: `https://example.com/products/${handle}`,
 									image_link: image,
 									availability: stock > 0 ? 'in_stock' : 'out_of_stock',
-									price: `${price.toFixed(2)} INR`,
+									// Google Merchant: price is the regular price, sale_price the discounted one.
+									price: `${(compareAtPrice || price).toFixed(2)} INR`,
+									...(compareAtPrice ? { sale_price: `${price.toFixed(2)} INR` } : {}),
 									condition: 'new',
 								};
 							}
