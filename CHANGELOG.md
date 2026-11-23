@@ -2,6 +2,11 @@
 
 All notable changes to the `n8n-nodes-devdeskapp` package will be documented in this file.
 
+## [0.1.8] - 2026-11-24
+
+### Fixed
+- **CTC to In-Hand Salary**: income tax now follows the new regime slabs from Budget 2025 (FY 2025-26 onward): 75,000 standard deduction, 4 lakh slabs from 0% to 30%, Section 87A rebate up to 12 lakh taxable income with marginal relief, and 4% cess. Tax is computed on gross salary (CTC minus employer PF) instead of CTC. A 12 lakh CTC now shows zero TDS, matching the DevDesk App web calculator.
+
 ## [0.1.7] - 2026-11-24
 
 ### Changed

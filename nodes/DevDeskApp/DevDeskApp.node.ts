@@ -1111,23 +1111,23 @@ export class DevDeskApp implements INodeType {
 						// Professional Tax standard ₹200/mo
 						const monthlyProfessionalTax = 200;
 
-						// Approximate income tax under simplified new regime
+						const monthlyGross = (ctc - employerMonthlyPf * 12) / 12;
+
+						// Income tax under the new regime (Budget 2025 slabs, from FY 2025-26):
+						// 75k standard deduction, 4L slabs from 0% to 30%, Section 87A rebate up to
+						// 12L taxable income with marginal relief just above it, plus 4% cess.
+						const taxable = Math.max(0, monthlyGross * 12 - 75000);
 						let estimatedAnnualTax = 0;
-						if (ctc > 700000) {
-							const taxable = Math.max(0, ctc - 75000); // Standard deduction
-							if (taxable > 1500000) {
-								estimatedAnnualTax = 150000 + (taxable - 1500000) * 0.3;
-							} else if (taxable > 1200000) {
-								estimatedAnnualTax = 90000 + (taxable - 1200000) * 0.2;
-							} else if (taxable > 1000000) {
-								estimatedAnnualTax = 60000 + (taxable - 1000000) * 0.15;
-							} else if (taxable > 700000) {
-								estimatedAnnualTax = 30000 + (taxable - 700000) * 0.1;
-							}
-						}
+						[0, 0.05, 0.1, 0.15, 0.2, 0.25].forEach((rate, idx) => {
+							const lower = idx * 400000;
+							estimatedAnnualTax += Math.max(0, Math.min(taxable, lower + 400000) - lower) * rate;
+						});
+						estimatedAnnualTax += Math.max(0, taxable - 2400000) * 0.3;
+						estimatedAnnualTax =
+							taxable <= 1200000 ? 0 : Math.min(estimatedAnnualTax, taxable - 1200000);
+						estimatedAnnualTax *= 1.04;
 
 						const monthlyTax = estimatedAnnualTax / 12;
-						const monthlyGross = (ctc - employerMonthlyPf * 12) / 12;
 						const monthlyInHand = Math.max(0, monthlyGross - employeeMonthlyPf - monthlyProfessionalTax - monthlyTax);
 
 						result = {
@@ -1141,7 +1141,7 @@ export class DevDeskApp implements INodeType {
 								professionalTax: monthlyProfessionalTax,
 								estimatedMonthlyTds: Math.round(monthlyTax),
 							},
-							taxRegime: 'India Standard / New Tax Benchmark',
+							taxRegime: 'India New Tax Regime (FY 2025-26 slabs, 87A rebate up to 12L)',
 							reference: 'https://www.devdeskapp.com/ctc-to-in-hand-calculator',
 						};
 					}
