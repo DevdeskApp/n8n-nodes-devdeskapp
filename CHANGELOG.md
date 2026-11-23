@@ -2,6 +2,21 @@
 
 All notable changes to the `n8n-nodes-devdeskapp` package will be documented in this file.
 
+## [0.1.7] - 2026-11-24
+
+### Changed
+- Node icon now uses the light DevDeskApp logo instead of the dark neon logo.
+
+### Fixed
+- **Slugify String**: accented letters keep their base letter instead of being dropped (`Crème Brûlée` becomes `creme-brulee`, not `crme-brle`).
+- **Catalog Schema Mapper**:
+  - Reads WooCommerce REST API fields as returned by the n8n WooCommerce node (`name`, `regular_price`, `sale_price`, `stock_quantity`, `short_description`, `images[].src`, `categories[].name`), so titles and prices no longer fall back to `Product 1` and `0.00`.
+  - A product on sale now maps the sale price to the selling price and the regular price to compare-at (previously reversed).
+  - A stock quantity of 0 is kept as 0 instead of being replaced by the default of 10.
+  - Shopify CSV input now reads `Title`, `Variant SKU` and `Body (HTML)`, and Google Merchant input reads `id` as the SKU and prices such as `649.00 INR`.
+  - WooCommerce output writes the higher price to `Regular price` and the discounted one to `Sale price`; Google Merchant output adds `sale_price` for discounted items.
+- Added unit tests for accented slugs and WooCommerce REST input; all 20 tests pass. Every operation and option (84 cases, including all 9 catalog source and target pairs, every webhook provider and every label size) was verified in a local n8n 2.8.4 workflow run.
+
 ## [0.1.6] - 2026-10-27
 
 ### Fixed
